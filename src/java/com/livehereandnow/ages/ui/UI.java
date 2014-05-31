@@ -30,17 +30,17 @@ public class UI {
 
     public Map<Integer, Integer> getPlayerTokens黃(int player) {
 
-//        if (player == 1) {
-//
-//            return engine.getField.getP1().getToken黃().getMap();
-//
-//        }
-//
-//        if (player == 2) {
-//
-//            return engine.getField().getP2().getToken黃().getMap();
-//
-//        }
+        if (player == 1) {
+
+            return engine.getP1().getToken黃().getMap();
+
+        }
+
+        if (player == 2) {
+
+            return engine.getP2().getToken黃().getMap();
+
+        }
 
         return null;
 
@@ -50,13 +50,13 @@ public class UI {
 
         if (player == 1) {
 
-//            return engine.getField().getP1().getToken藍().getMap();
+            return engine.getP1().getToken藍().getMap();
 
         }
 
         if (player == 2) {
 
-//            return engine.getField().getP2().getToken藍().getMap();
+            return engine.getP2().getToken藍().getMap();
 
         }
 

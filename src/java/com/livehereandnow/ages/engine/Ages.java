@@ -276,6 +276,7 @@ public class Ages {
 
     public Ages() throws AgesException {
         server = new AgesGameServerJDBC();
+       reset();
         init();
 
     }
@@ -436,7 +437,8 @@ public class Ages {
             case "s":
             case "status":
 //                return core.doStatus();
-                field.show(0);
+//                field.show(0);
+                show(0);
                 return " just did field.show(0)";
             case "ss":
                 field.show(10);
@@ -1149,6 +1151,12 @@ public class Ages {
         return true;
     }
 
+    private void show(int i) {
+        field.show(0);
+        p1.show();
+        p2.show();
+    }
+
     public class Field {
 
 //    public String getCurrentStage(){
@@ -1289,8 +1297,12 @@ public class Ages {
         }
 
         public Field() {
+            init();
         }
 
+        public void init(){
+            
+        }
         public List<AgesCard> getQryCards() {
             return qryCards;
         }
