@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.livehereandnow.ages;
+package com.livehereandnow.ages.ui;
 
 /**
  *

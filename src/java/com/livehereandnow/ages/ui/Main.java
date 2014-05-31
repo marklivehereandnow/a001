@@ -1,8 +1,8 @@
-package com.livehereandnow.ages;
+package com.livehereandnow.ages.ui;
 
 
 import com.livehereandnow.ages.card.AgesCard;
-import com.livehereandnow.ages.engine.AgesEngine;
+import com.livehereandnow.ages.engine.Ages;
 import com.livehereandnow.ages.exception.AgesException;
 
 import java.io.BufferedReader;
@@ -19,14 +19,14 @@ import javax.inject.Named;
 
 public class Main implements Serializable {
 
-    private AgesEngine engine;
+    private Ages engine;
     
 
-    public AgesEngine getEngine() {
+    public Ages getEngine() {
         return engine;
     }
 
-    public void setEngine(AgesEngine engine) {
+    public void setEngine(Ages engine) {
         this.engine = engine;
     }
     
@@ -74,7 +74,7 @@ private String strDebug;
     
     
     public Main() throws AgesException, IOException {
-        engine = new AgesEngine();
+        engine = new Ages();
         engine.doCmd("new-game");
        
     }
@@ -90,7 +90,7 @@ private String strDebug;
         BufferedReader in = new BufferedReader(cin);
 //        engine.getField().show();
         while (true) {
-            System.out.print("" + engine.getCurrentPlayer()+ " >> ");
+            System.out.print("" + engine.getCurrentPlayerName()+ " >> ");
             parser(in.readLine());
 //            engine.doCmd("9999");
         

@@ -1,10 +1,10 @@
-package com.livehereandnow.ages;
+package com.livehereandnow.ages.ui;
 
 import com.livehereandnow.ages.card.AgesCard;
 import com.livehereandnow.ages.cardrow.Cardrow;
-import com.livehereandnow.ages.engine.AgesEngine;
+import com.livehereandnow.ages.engine.Ages;
 import com.livehereandnow.ages.exception.AgesException;
-import com.livehereandnow.ages.field.Player;
+//import com.livehereandnow.ages.engine.Player;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,43 +16,31 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class UI {
 
-    AgesEngine engine;
+    Ages engine;
+//    Ages.Field field;
     private String text;
     private String debug;
     private int counter;
     private String militaryCardOption;
 
     public Map<String, Integer> getPlayerScore(int player) {
-
-        if (player == 1) {
-
-            return engine.getField().getP1().getScore().getMap();
-
-        }
-
-        if (player == 2) {
-
-            return engine.getField().getP2().getScore().getMap();
-
-        }
-
-        return null;
+        return engine.getPlayerScore(player);
 
     }
 
     public Map<Integer, Integer> getPlayerTokens黃(int player) {
 
-        if (player == 1) {
-
-            return engine.getField().getP1().getToken黃().getMap();
-
-        }
-
-        if (player == 2) {
-
-            return engine.getField().getP2().getToken黃().getMap();
-
-        }
+//        if (player == 1) {
+//
+//            return engine.getField.getP1().getToken黃().getMap();
+//
+//        }
+//
+//        if (player == 2) {
+//
+//            return engine.getField().getP2().getToken黃().getMap();
+//
+//        }
 
         return null;
 
@@ -62,13 +50,13 @@ public class UI {
 
         if (player == 1) {
 
-            return engine.getField().getP1().getToken藍().getMap();
+//            return engine.getField().getP1().getToken藍().getMap();
 
         }
 
         if (player == 2) {
 
-            return engine.getField().getP2().getToken藍().getMap();
+//            return engine.getField().getP2().getToken藍().getMap();
 
         }
 
@@ -91,19 +79,19 @@ public class UI {
 
     public String getCurrentAge() {
         String strAge[] = {"A", "I", "II", "III", "IV"};
-        return strAge[engine.getField().get當前時代()];
+        return strAge[engine.get當前時代()];
     }
 
     public int getRoundNumber() {
-        return engine.getField().getRound().getVal();
+        return engine.getRound().getVal();
     }
 
     public String getCurrentPlayer() {
-        return engine.getField().getCurrentPlayer().getName();
+        return engine.getCurrentPlayerName();
     }
 
     public int getCurrentStage() {
-        return engine.getField().get現在階段();
+        return engine.get現在階段();
     }
 
     public void doStart() throws IOException, AgesException {
@@ -126,7 +114,8 @@ public class UI {
     public List<AgesCard> getSector未來事件() {
         return engine.getField().get未來事件();
     }
-public List<AgesCard> getSector現在發生事件() {
+
+    public List<AgesCard> getSector現在發生事件() {
         return engine.getField().get現在發生事件();
     }
 
@@ -161,51 +150,51 @@ public List<AgesCard> getSector現在發生事件() {
     }
 
     public List<AgesCard> getPlayerAAA手牌軍事牌區() {
-        return engine.getField().getP1().get手牌軍事牌區();
+        return engine.getP1().get手牌軍事牌區();
     }
 
     public List<AgesCard> getPlayerAAA政府區() {
-        return engine.getField().getP1().get政府區();
+        return engine.getP1().get政府區();
     }
 
     public List<AgesCard> getPlayerBBB政府區() {
-        return engine.getField().getP2().get政府區();
+        return engine.getP2().get政府區();
     }
 
     public List<AgesCard> getPlayerAAA領袖區() {
-        return engine.getField().getP1().get領袖區();
+        return engine.getP1().get領袖區();
     }
 
     public List<AgesCard> getPlayerAAA建造中的奇蹟區() {
-        return engine.getField().getP1().get建造中的奇蹟區();
+        return engine.getP1().get建造中的奇蹟區();
     }
 
     public List<AgesCard> getPlayerAAA實驗室() {
-        return engine.getField().getP1().get實驗室();
+        return engine.getP1().get實驗室();
     }
 
     public List<AgesCard> getPlayerAAAOnTable() {
-        return engine.getField().getP1().getOnTable();
+        return engine.getP1().getOnTable();
     }
 
     public List<AgesCard> getPlayerBBBOnTable() {
-        return engine.getField().getP2().getOnTable();
+        return engine.getP2().getOnTable();
     }
 
     public List<AgesCard> getPlayerAAA神廟區() {
-        return engine.getField().getP1().get神廟區();
+        return engine.getP1().get神廟區();
     }
 
     public List<AgesCard> getPlayerAAA農場區() {
-        return engine.getField().getP1().get農場區();
+        return engine.getP1().get農場區();
     }
 
     public List<AgesCard> getPlayerAAA礦山區() {
-        return engine.getField().getP1().get礦山區();
+        return engine.getP1().get礦山區();
     }
 
     public List<AgesCard> getPlayerAAA步兵區() {
-        return engine.getField().getP1().get步兵區();
+        return engine.getP1().get步兵區();
     }
 
     public void doNOTHING(int index) throws IOException, AgesException {
@@ -225,13 +214,12 @@ public List<AgesCard> getSector現在發生事件() {
         System.out.println(" doPlayCard... , SEQ=" + index);
         engine.actPlayCardBySeq(index);
     }
+
     public void doPlayMilitaryCard(int index) throws IOException, AgesException {
         System.out.println(" doPlayMilitaryCard... , SEQ=" + index);
         engine.actPlayMilitaryCardBySeq(index);
     }
-    
-    
-    
+
 //    public void doPlayMilitaryCard(int index) throws IOException, AgesException{
 //        System.out.println(" doPlayMilitaryCard... , SEQ="+index);
 //        if (engine.getCurrentPlayer().equals("AAA") ){
@@ -239,7 +227,6 @@ public List<AgesCard> getSector現在發生事件() {
 //        }
 ////        engine.actPlayCardBySeq(index);                
 //    }
-
 //    public void doDiscardCard(int index) throws IOException, AgesException{
 //        System.out.println(" doDiscardCard... , SEQ="+index);
 ////        engine.actPlayCardBySeq(index);                
@@ -276,11 +263,11 @@ public List<AgesCard> getSector現在發生事件() {
     }
 
     public List<AgesCard> getP1Hand() {
-        return engine.getField().getP1().get手牌內政牌區();
+        return engine.getP1().get手牌內政牌區();
     }
 
     public List<AgesCard> getP2Hand() {
-        return engine.getField().getP2().get手牌內政牌區();
+        return engine.getP2().get手牌內政牌區();
     }
 
     public List<Cardrow> getCardRowInTable() {
@@ -343,13 +330,13 @@ public List<AgesCard> getSector現在發生事件() {
         return listCardRowInTable;
     }
 
-    public AgesEngine getEngine() {
+    public Ages getEngine() {
         return engine;
     }
 
     public UI() throws AgesException {
         counter = 0;
-        engine = new AgesEngine();
+        engine = new Ages();
     }
 
     public String getDebug() {
