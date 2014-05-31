@@ -13,9 +13,9 @@
     <h:body>
         <h1>A001 index.xhtml - UI.java - Ages.java</h1>
         <h2>Ages: Field, Player x 2 --- done</h2>
-        
+
         <h:form>
-    
+
             <h:panelGrid columns="10" cellpadding="5">
                 <p:commandButton value="New Game" action="#{uI.doNewGame()}" update="cardrow_img,age,round, player,stage, p1hand"  />
                 <p:commandButton value="Start" action="#{uI.doStart()}" update="cardrow_img,age,round, player,stage, p1hand"  />
@@ -30,7 +30,7 @@
                 <p:commandButton value="Change Turn" action="#{uI.doChangeTurn()}" update="cardrow_img,age,round, player,stage, p1hand"  />
 
             </h:panelGrid>
-          <table>
+            <table>
                 <tr>
                     <td><table> <tr><td><strong>Better UI to develop/test Ages Game</strong></td></tr></table></td>
                     <th style="background-color: lightcyan">Round</th>
@@ -69,44 +69,80 @@
                     </h:panelGrid>
                 </p:tab>
                 <p:tab title="for military">
-                    <h:panelGrid  columns="13" cellpadding="0">
-                        <h3>現在發生</h3>
+                    <table>
+                        <tr>
+                            <td>現在發生</td>
+                            <td>當前事件</td>
+                            <td>未來事件</td>
+                        </tr>
+                        <tr>
+                            <td>    <c:forEach  var="zzz" items="#{uI.sector現在發生事件}">
+                                    <h:commandButton action="#{uI.doTakeCard(zzz.seq)}"  image="#{uI.imgBaseDir}#{zzz.id}#{uI.imgExt}" >
+                                        <f:ajax render="@form" />
+                                    </h:commandButton>    
+                                </c:forEach></td>
+                            <td><c:forEach  var="zzz" items="#{uI.sector當前事件}">
+                                    <h:commandButton action="#{uI.doTakeCard(zzz.seq)}"  image="#{uI.imgBaseDir}#{zzz.id}#{uI.imgExt}" >
+                                        <f:ajax render="@form" />
+                                    </h:commandButton>    
+                                </c:forEach></td>
+                            <td> <c:forEach  var="zzz" items="#{uI.sector未來事件}">
+                                    <h:commandButton action="#{uI.doTakeCard(zzz.seq)}"  image="#{uI.imgBaseDir}#{zzz.id}#{uI.imgExt}" >
+                                        <f:ajax render="@form" />
+                                    </h:commandButton>    
+                                </c:forEach></td>
+                        </tr>
 
-                        <c:forEach  var="zzz" items="#{uI.sector現在發生事件}">
-                            <h:commandButton action="#{uI.doTakeCard(zzz.seq)}"  image="#{uI.imgBaseDir}#{zzz.id}#{uI.imgExt}" >
-                                <f:ajax render="@form" />
-                            </h:commandButton>    
-                        </c:forEach>
-                    </h:panelGrid>
-                    <h:panelGrid  columns="13" cellpadding="0">
-                        <h3>當前事件</h3>
-                        <c:forEach  var="zzz" items="#{uI.sector當前事件}">
-                            <h:commandButton action="#{uI.doTakeCard(zzz.seq)}"  image="#{uI.imgBaseDir}#{zzz.id}#{uI.imgExt}" >
-                                <f:ajax render="@form" />
-                            </h:commandButton>    
-                        </c:forEach>
-                    </h:panelGrid>
+                    </table>
 
-                    <h:panelGrid  columns="13" cellpadding="0">
-                        <h3>未來事件</h3>
+                    <!--                    <h:panelGrid  columns="13" cellpadding="0">
+                                            <h3>現在發生</h3>
+                    
+                                            <c:forEach  var="zzz" items="#{uI.sector現在發生事件}">
+                                                <h:commandButton action="#{uI.doTakeCard(zzz.seq)}"  image="#{uI.imgBaseDir}#{zzz.id}#{uI.imgExt}" >
+                                                    <f:ajax render="@form" />
+                                                </h:commandButton>    
+                                            </c:forEach>
+                                        </h:panelGrid>
+                                        <h:panelGrid  columns="13" cellpadding="0">
+                    
+                    
+                                            <h3>當前事件</h3>
+                                            <c:forEach  var="zzz" items="#{uI.sector當前事件}">
+                                                <h:commandButton action="#{uI.doTakeCard(zzz.seq)}"  image="#{uI.imgBaseDir}#{zzz.id}#{uI.imgExt}" >
+                                                    <f:ajax render="@form" />
+                                                </h:commandButton>    
+                                            </c:forEach>
+                                        </h:panelGrid>
+                    
+                                        <h:panelGrid  columns="13" cellpadding="0">
+                                            <h3>未來事件</h3>
+                    
+                                            <c:forEach  var="zzz" items="#{uI.sector未來事件}">
+                                                <h:commandButton action="#{uI.doTakeCard(zzz.seq)}"  image="#{uI.imgBaseDir}#{zzz.id}#{uI.imgExt}" >
+                                                    <f:ajax render="@form" />
+                                                </h:commandButton>    
+                                            </c:forEach>
+                                        </h:panelGrid>-->
 
-                        <c:forEach  var="zzz" items="#{uI.sector未來事件}">
-                            <h:commandButton action="#{uI.doTakeCard(zzz.seq)}"  image="#{uI.imgBaseDir}#{zzz.id}#{uI.imgExt}" >
-                                <f:ajax render="@form" />
-                            </h:commandButton>    
-                        </c:forEach>
-                    </h:panelGrid>
+                    <table>
+                        <tr>
+                            <td>當前時代軍事</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h:panelGrid  columns="10" cellpadding="0">
+                                    <c:forEach  var="zzz" items="#{uI.sector時代軍事牌}">
+                                        <h:commandButton action="#{uI.doTakeCard(zzz.seq)}"  image="#{uI.imgBaseDir}#{zzz.id}#{uI.imgExt}" >
+                                            <f:ajax render="@form" />
+                                        </h:commandButton>    
+                                    </c:forEach>
+                                </h:panelGrid>
 
-                
-                    <h:panelGrid  columns="13" cellpadding="0">
-                        <h3>時代軍事</h3>
+                            </td>
+                        </tr>
+                    </table>
 
-                        <c:forEach  var="zzz" items="#{uI.sector時代軍事牌}">
-                            <h:commandButton action="#{uI.doTakeCard(zzz.seq)}"  image="#{uI.imgBaseDir}#{zzz.id}#{uI.imgExt}" >
-                                <f:ajax render="@form" />
-                            </h:commandButton>    
-                        </c:forEach>
-                    </h:panelGrid>
                 </p:tab>
             </p:tabView>
 
