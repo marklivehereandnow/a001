@@ -83,6 +83,17 @@ public class AgesCardFactory {
         }
         return getNOCARD();
     }
+public AgesCard getCardById(int id) {
+        List<AgesCard> list = getEntireList();
+        AgesCard card;
+        for (AgesCard list1 : list) {
+            card = list1;
+            if (card.getId()==id) {
+                return card;
+            }
+        }
+        return getNOCARD();
+    }
 
     public List<AgesCard> getAgeMilitary(int age) {
         List<AgesCard> list = getEntireList();

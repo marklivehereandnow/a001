@@ -11,9 +11,9 @@ public class Points {
     public Points() {
     }
 
-    public Points(String str) {
-        title = str;
-    }
+//    public Points(String str) {
+//        title = str;
+//    }
 
     public String getTitle() {
         return title;

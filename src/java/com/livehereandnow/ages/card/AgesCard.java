@@ -75,7 +75,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class AgesCard implements Serializable, AgesCommon {
 
 //    private final String[] ageStr = {"A", "I", "II", "III", "-"};
-
     private static final long serialVersionUID = 1L;
     @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -643,181 +642,139 @@ public class AgesCard implements Serializable, AgesCommon {
         sb.append("【");
         sb.append(AGE_NAME[age]);
         sb.append("");
-        sb.append(name);
         sb.append(id);
-        sb.append("-");
-        sb.append(tag);
-        sb.append(" 白");
-        sb.append(effectWhite);
-        sb.append(" 紅");
-        sb.append(effectRed);
+        sb.append(name);
+//        sb.append("-");
+//        sb.append(tag);
+        sb.append(FULLWIDTH_SPACE).append("白").append(FULLWIDTH_COLON).append(effectWhite);
+        sb.append(FULLWIDTH_SPACE).append("紅").append(FULLWIDTH_COLON).append(effectRed);
+
         sb.append("】");
         return sb.toString();
     }
 
-    /**
-     *
-     * @param style <br>
-     * case 1:// 政府區 <br>
-     * case 2:// ,農場區,礦山區, 實驗室,神廟區,步兵區
-     * @return
-     */
+    private String toString實驗室() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("【");
+        sb.append(AGE_NAME[age]);
+        sb.append("");
+        sb.append(id);
+        sb.append(name);
+//        sb.append("-");
+//        sb.append(tag);
+        sb.append(FULLWIDTH_SPACE).append("成本{").append(iconPoints).append("}");
+        sb.append(FULLWIDTH_SPACE).append("效果{").append(effect).append("}");
+
+        sb.append("】");
+        return sb.toString();
+    }
+
+    private String toString領袖區() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("【");
+        sb.append(AGE_NAME[age]);
+        sb.append("");
+        sb.append(id);
+        sb.append(name);
+        sb.append(FULLWIDTH_SPACE).append("效果{").append(effect).append("}");
+
+        sb.append("】");
+        return sb.toString();
+    }
+
+    private String toString普通() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("【");
+        sb.append(AGE_NAME[age]);
+        sb.append("");
+        sb.append(id);
+        sb.append(name);
+//        sb.append("-");
+        sb.append(FULLWIDTH_SPACE).append(tag);
+        sb.append(FULLWIDTH_SPACE).append("成本{").append(iconPoints).append("}");
+        sb.append(FULLWIDTH_SPACE).append("效果{").append(effect).append("}");
+
+        sb.append("】");
+        return sb.toString();
+    }
+
+    private String toString建造中的奇蹟區() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("【");
+        sb.append(AGE_NAME[age]);
+        sb.append("");
+        sb.append(id);
+        sb.append(name);
+//        sb.append("-");
+        sb.append(FULLWIDTH_SPACE).append(tag);
+        sb.append(FULLWIDTH_SPACE).append("成本{").append(iconPoints).append("}");
+
+        sb.append("】");
+        return sb.toString();
+    }
+
+    private String toString已完成的奇蹟() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("【");
+        sb.append(AGE_NAME[age]);
+        sb.append("");
+        sb.append(id);
+        sb.append(name);
+        sb.append(FULLWIDTH_SPACE).append("效果{").append(effect).append("}");
+
+        sb.append("】");
+        return sb.toString();
+    }
+
+    private String toString行動牌() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("【");
+        sb.append(AGE_NAME[age]);
+        sb.append("");
+        sb.append(id);
+        sb.append(name);
+        sb.append(action);
+        sb.append("】");
+        return sb.toString();
+    }
+
+    private String toStringSimple() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("【");
+        sb.append(AGE_NAME[age]);
+        sb.append("");
+        sb.append(id);
+        sb.append(name);
+//        sb.append(FULLWIDTH_SPACE).append(tag);
+//        sb.append(FULLWIDTH_SPACE).append("成本{").append(iconPoints).append("}");
+//        sb.append(FULLWIDTH_SPACE).append("效果{").append(effect).append("}");
+//     
+        sb.append("】");
+        return sb.toString();
+    }
+
+
+    
     public String toString(int style) {
 
         switch (style) {
             case STYLE_政府區:
                 return toString政府區();
-            case 8:// 農場區,礦山區
-                StringBuilder sb8 = new StringBuilder();
-//                System.out.println("");
-                sb8.append("[");
-                sb8.append(AGE_NAME[age]);
-                sb8.append("");
-                sb8.append(name);
-                sb8.append(id);
-
-                sb8.append(" 黃");
-                sb8.append(this.tokenYellow);
-
-                sb8.append(" 藍");
-                sb8.append(this.getTokenBlue());
-                sb8.append(" #");
-                sb8.append(effect);
-                sb8.append("#");
-                sb8.append(" 成本:");
-                sb8.append(this.iconPoints);
-
-                sb8.append("] ");
-                return sb8.toString();
-            case 2:// 農場區,礦山區
-                StringBuilder sb2 = new StringBuilder();
-//                System.out.println("");
-                sb2.append("[");
-                sb2.append(AGE_NAME[age]);
-                sb2.append("");
-
-                sb2.append(name);
-                sb2.append(id);
-                sb2.append("-");
-                sb2.append(tag);
-
-//                sb2.append(" 黃:");
-//                sb2.append(this.tokenYellow);
-//                
-//                sb2.append(" 藍:");
-//                sb2.append(this.getTokenBlue());
-                sb2.append("] ");
-                return sb2.toString();
-            case 3:// for CardNow
-                StringBuilder sb3 = new StringBuilder();
-//                System.out.println("");
-                sb3.append("xxx[");
-                sb3.append(AGE_NAME[age]);
-                sb3.append("");
-                sb3.append(name);
-                sb3.append(id);
-                sb3.append("-");
-                sb3.append(tag);
-                sb3.append("] ");
-                return sb3.toString();
-
-            //【
-            case 5:
-                StringBuilder sb5 = new StringBuilder();
-//                sb5.append(seq);
-                sb5.append("[");
-                sb5.append("");
-                sb5.append(name);
-                sb5.append(id);
-                sb5.append("] ");
-                return sb5.toString();
-            case STYLE_領袖區:// 領袖區
-                StringBuilder sb101 = new StringBuilder();
-//                System.out.println("");
-                sb101.append("【");
-                sb101.append(AGE_NAME[age]);
-                sb101.append("");
-                sb101.append(name);
-                sb101.append(id);
-                sb101.append("-");
-
-                sb101.append(action);
-
-                sb101.append("】 ");
-                return sb101.toString();
-
-            case 102:// 建造中的奇蹟區
-                StringBuilder sb102 = new StringBuilder();
-//                System.out.println("");
-                sb102.append("【");
-                sb102.append(AGE_NAME[age]);
-                sb102.append("");
-                sb102.append(name);
-                sb102.append(id);
-                sb102.append("-");
-                sb102.append(iconPoints);
-                sb102.append("】 ");
-                return sb102.toString();
-
-            case 103:// 已完成的奇蹟
-                StringBuilder sb103 = new StringBuilder();
-//                System.out.println("");
-                sb103.append("【");
-                sb103.append(AGE_NAME[age]);
-                sb103.append("");
-                sb103.append(name);
-                sb103.append(id);
-                sb103.append(" #");
-                sb103.append(effect);
-                sb103.append("#");
-                sb103.append("】 ");
-                return sb103.toString();
-            case 104:// 實驗室 神廟區 步兵區
-                StringBuilder sb104 = new StringBuilder();
-//                System.out.println("");
-                sb104.append("【");
-                sb104.append(AGE_NAME[age]);
-                sb104.append("");
-                sb104.append(name);
-                sb104.append(id);
-
-                sb104.append(" 黃:");
-                sb104.append(tokenYellow);
-                sb104.append(" #");
-                sb104.append(effect);
-                sb104.append("#");
-                sb104.append("】 ");
-                return sb104.toString();
-
-            case 105:// 行動牌
-                StringBuilder sb105 = new StringBuilder();
-//                System.out.println("");
-                sb105.append("【");
-                sb105.append(AGE_NAME[age]);
-                sb105.append("");
-                sb105.append(name);
-                sb105.append(id);
-
-                sb105.append(" #");
-                sb105.append(this.action);
-                sb105.append("#");
-                sb105.append("】");
-                return sb105.toString();
+            case STYLE_領袖區:
+                return toString領袖區();
+            case STYLE_建造中的奇蹟區:
+                return toString建造中的奇蹟區();
+            case STYLE_已完成的奇蹟:
+                return toString已完成的奇蹟();
+            case STYLE_實驗室:
+                return toString實驗室();
+            case STYLE_行動牌:
+                return toString行動牌();
             default:
-                StringBuilder sb99 = new StringBuilder();
-                sb99.append("[");
-
-                sb99.append("");
-                sb99.append(name);
-                sb99.append(id);
-                sb99.append("] ");
-                return sb99.toString();
-
-//                return toString();
+                return toStringSimple();
         }
     }
-//\n
-
+    
     @Override
     public String toString() {
         return "AgesCard{" + "seq=" + seq + ", id=" + id + ", name=" + name + ", age=" + age + ", civilMilitary=" + civilMilitary + ", tag=" + tag + ", action=" + action + ", iconPoints=" + iconPoints + ", effect=" + effect + ", cost=" + cost + ", color=" + color + ", \ncnt=" + cnt + ", tokenWhite=" + tokenWhite + ", tokenRed=" + tokenRed + ", tokenYellow=" + tokenYellow + ", tokenBlue=" + tokenBlue + ", effectWhite=" + effectWhite + ", effectFood=" + effectFood + ", effectRed=" + effectRed + ", effectMusic=" + effectMusic + ", effectStone=" + effectStone + ", effectIdea=" + effectIdea + ", \neffectSmile=" + effectSmile + ", effectHouse=" + effectHouse + ", effectBlue=" + effectBlue + ", effectWeapon=" + effectWeapon + ", effectWeaponOld=" + effectWeaponOld + ", effectYellow=" + effectYellow + ", costPeople=" + costPeople + ", costFoot=" + costFoot + ", costWonder=" + costWonder + ", \ncostMilitary=" + costMilitary + ", costHorse=" + costHorse + ", costCannon=" + costCannon + ", costPeace=" + costPeace + ", costRevolution=" + costRevolution + ", costRed=" + costRed + ", costStone=" + costStone + ", costIdea=" + costIdea + ", costFood=" + costFood + ", costMusic=" + costMusic + '}';

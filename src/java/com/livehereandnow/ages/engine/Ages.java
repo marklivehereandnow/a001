@@ -9,7 +9,9 @@ package com.livehereandnow.ages.engine;
 import com.livehereandnow.ages.card.AgesCard;
 import com.livehereandnow.ages.card.AgesCardFactory;
 import com.livehereandnow.ages.card.AgesCommon;
+import static com.livehereandnow.ages.card.AgesCommon.STYLE_實驗室;
 import static com.livehereandnow.ages.card.AgesCommon.STYLE_政府區;
+import static com.livehereandnow.ages.card.AgesCommon.STYLE_領袖區;
 import com.livehereandnow.ages.exception.AgesException;
 import com.livehereandnow.ages.field.Points;
 import com.livehereandnow.ages.field.Score;
@@ -37,14 +39,6 @@ public class Ages implements AgesCommon {
 
     // constants
 //    final String[] STAGE_NAME = {" ", "政治階段", "內政階段"};
-    final String[] STAGE_NAME = {" ", "政治", "內政"};
-//    final String[] AGE_NAME = {"A", "I", "II", "III"};
-    final String FULLWIDTH_COLON = "\uFF1A";//;
-    final String FULLWIDTH_SPACE = "\u3000";
-    final String FULLWIDTH_LT_SIGN = "\uFF1C";// <
-    final String FULLWIDTH_EQ_SIGN = "\uFF1D";// =
-    final String FULLWIDTH_GT_SIGN = "\uFF1E";// >
-
     // variables
     private Player p1;
     private Player p2;
@@ -170,18 +164,25 @@ public class Ages implements AgesCommon {
 
     public void set當前操作玩家(Player 當前操作玩家) {
         this.當前操作玩家 = 當前操作玩家;
+//        show時代回合玩家階段();
     }
 
     public void 交換玩家() {
 
         if (currentPlayer == p1) {
             currentPlayer = p2;
+            當前操作玩家 = currentPlayer;
+//            show時代回合玩家階段();
+
             return;
         }
         if (currentPlayer == p2) {
             currentPlayer = p1;
 //            System.out.println("auto to next 回合");
             round.addPoints(1);
+
+            當前操作玩家 = currentPlayer;
+//            show時代回合玩家階段();
 
             return;
         }
@@ -215,7 +216,7 @@ public class Ages implements AgesCommon {
 
     public void reset() {
         //
-        round = new Points("回合");
+        round = new Points();
         round.setVal(0);
         //
         p1 = new Player("AAA");
@@ -224,7 +225,7 @@ public class Ages implements AgesCommon {
         allPlayers.add(p1);
         allPlayers.add(p2);
         currentPlayer = p1;
-
+        當前操作玩家 = p1;
         //
         cardFactory = new AgesCardFactory();
         allCards = cardFactory.getEntireList();
@@ -292,9 +293,6 @@ public class Ages implements AgesCommon {
         }
         if (當前操作玩家 == p2) {
             當前操作玩家 = p1;
-//            System.out.println("auto to next 回合");
-            round.addPoints(1);
-
             return;
         }
     }
@@ -401,7 +399,9 @@ public class Ages implements AgesCommon {
         sb.append(FULLWIDTH_SPACE).append("回合").append(FULLWIDTH_COLON).append(round.getVal());
         sb.append(FULLWIDTH_SPACE).append("玩家").append(FULLWIDTH_COLON).append(currentPlayer.getName());
         sb.append(FULLWIDTH_SPACE).append("階段").append(FULLWIDTH_COLON).append(STAGE_NAME[現在階段]);
+        sb.append(FULLWIDTH_SPACE).append("當前操作玩家").append(FULLWIDTH_COLON).append(get當前操作玩家().getName());
         sb.append(FULLWIDTH_SPACE);
+
         sb.append(FULLWIDTH_EQ_SIGN).append(FULLWIDTH_EQ_SIGN).append(FULLWIDTH_EQ_SIGN);
         System.out.println(sb.toString());
     }
@@ -579,6 +579,7 @@ public class Ages implements AgesCommon {
 //                return core.doStatus();
 //                field.showSector(0);
 //                showSector(0);
+                show時代回合玩家階段();
                 field.show卡牌列();
                 p1.show();
                 p2.show();
@@ -1209,7 +1210,13 @@ public class Ages implements AgesCommon {
 
     private boolean doEvent(int val) throws IOException {
         System.out.println("現在執行卡號ID為:" + val + "的事件");
-        System.out.println("只執行Tag=事件");
+        AgesCard card = cardFactory.getCardById(val);
+        if (!card.getTag().equals("事件")) {
+            System.out.println("只執行Tag=事件");
+            System.out.println("BUT THIS CARD'S TAG IS " + card.getTag());
+            return false;
+        }
+//        System.out.println("只執行Tag=事件");
 //        System.out.println(field.get現在發生事件().get(0).getAction());
         switch (val) {
             case 8888:
@@ -1224,6 +1231,8 @@ public class Ages implements AgesCommon {
                 break;
             case 1006:
                 set當前操作玩家(currentPlayer);
+                show時代回合玩家階段();
+
                 InputStreamReader cin = new InputStreamReader(System.in);
                 BufferedReader in = new BufferedReader(cin);
                 System.out.println(get當前操作玩家().getName() + "是否將一名閒置工人免費升級為戰士(Y/N)");
@@ -1234,6 +1243,8 @@ public class Ages implements AgesCommon {
                     System.out.println(get當前操作玩家().getName() + "決定不把閒置工人免費升級為戰士");
                 }
                 交換當前操作玩家();
+                show時代回合玩家階段();
+
                 System.out.println(get當前操作玩家().getName() + "是否將一名閒置工人免費升級為戰士(Y/N)");
                 if (in.readLine().equalsIgnoreCase("Y")) {
                     System.out.println(get當前操作玩家().getName() + "決定閒置工人免費升級為戰士");
@@ -1293,6 +1304,7 @@ public class Ages implements AgesCommon {
              */
 
             default:
+                System.out.println("DOING... NEED TO PROGRAM FOR THIS EVENT " + val);
         }
         return true;
     }
@@ -2568,66 +2580,47 @@ public class Ages implements AgesCommon {
         }
 
         public void init() {
+            //TESTING 
             score = new Score();
-
             score.getMap().put("內政點數", 0);
-
             score.getMap().put("軍事點數", 0);
-
             score.getMap().put("建築上限", 0);
-
             score.getMap().put("內政手牌上限", 0);
-
             score.getMap().put("軍事手牌上限", 0);
-
             score.getMap().put("殖民點數", 0);
-
             score.getMap().put("文化", 0);
-
             score.getMap().put("文化﹝＋﹞", 0);
-
             score.getMap().put("科技", 0);
-
             score.getMap().put("科技﹝＋﹞", 0);
-
             score.getMap().put("軍力", 0);
-
             score.getMap().put("笑臉", 0);
-
             this.token藍 = new Token();
-
             this.token黃 = new Token();
-
             token黃.getMap().put(1010, 1);
-
             token黃.getMap().put(1007, 2);
-
             token黃.getMap().put(1032, 2);
-
             token黃.getMap().put(1018, 1);
-
             token黃.getMap().put(2, 1);
-
             token黃.getMap().put(1, 18);
-
             token藍.getMap().put(3, 18);
 
-            內政點數 = new Points("內政點數");
-            軍事點數 = new Points("軍事點數");
+            //
+            內政點數 = new Points();
+            軍事點數 = new Points();
+            內政手牌上限 = new Points();
+            軍事手牌上限 = new Points();
+            建築上限 = new Points();
+            殖民點數 = new Points();
 
-            建築上限 = new Points("建築上限");
-            內政手牌上限 = new Points("內政手牌上限");
-            軍事手牌上限 = new Points("軍事手牌上限");
-            殖民點數 = new Points("殖民點數");
-            文化 = new Points("文化");
-            文化生產_當回合 = new Points("文化﹝＋﹞");//
-            科技 = new Points("科技");
-            科技生產_當回合 = new Points("科技﹝＋﹞");
-            軍力 = new Points("軍力");
-            資源庫_藍點 = new Points("資源庫【藍】");
-            人力庫_黃點 = new Points("人力庫【黃】");
-            笑臉_幸福指數 = new Points("笑臉【】");
-            工人區_黃點 = new Points("工人區【黃】");
+            文化 = new Points();
+            文化生產_當回合 = new Points();//
+            科技 = new Points();
+            科技生產_當回合 = new Points();
+            軍力 = new Points();
+            資源庫_藍點 = new Points();
+            人力庫_黃點 = new Points();
+            笑臉_幸福指數 = new Points();
+            工人區_黃點 = new Points();
 
             戰爭區 = new ArrayList<>();
             戰術區 = new ArrayList<>();
@@ -2684,22 +2677,27 @@ public class Ages implements AgesCommon {
 //        軍事手牌上限.setVal(new回合軍事點數);
             int white = 0;
             int red = 0;
+            int house = 0;
             List<AgesCard> buildList = new ArrayList<>();
             buildList.addAll(政府區);
             buildList.addAll(領袖區);
             buildList.addAll(已完成的奇蹟);
             for (AgesCard card : buildList) {
-                if (card.getEffectWhite() > 0) {
+                if (card.getEffectWhite() != 0) {
                     white += card.getEffectWhite();
                 }
-                if (card.getEffectRed() > 0) {
+                if (card.getEffectRed() != 0) {
                     red += card.getEffectRed();
+                }
+                if (card.getEffectHouse() != 0) {
+                    house += card.getEffectHouse();
                 }
 
             }
 
             內政手牌上限.setVal(white);
             軍事手牌上限.setVal(red);
+            this.建築上限.setVal(house);
 //        System.out.println("內政手牌上限，軍事手牌上限剛剛更新");
         }
 
@@ -2711,121 +2709,148 @@ public class Ages implements AgesCommon {
             }
         }
 
-        public void showSectorStyle政府區(List<AgesCard> list, String title) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("\n");
-            sb.append(FULLWIDTH_SPACE);
-            for (AgesCard card : list) {
-                sb.append(card.toString(STYLE_政府區));
-            }
-            System.out.println(sb.toString());
+        public void showNewLine() {
+            System.out.println("");
         }
-        
-        
+
+        private void showSectorStyle(List<AgesCard> list, String title, int cardStyle) {
+            StringBuilder sb = new StringBuilder();
+//            sb.append("\n");
+            sb.append(FULLWIDTH_SPACE);
+            sb.append(title);
+//            sb.append(getCardsWithGivenStyle(list, STYLE_政府區));
+            sb.append(getCardsWithGivenStyle(list, cardStyle));
+            System.out.print(sb.toString());
+        }
+
+        private String getCardsWithGivenStyle(List<AgesCard> list, int style) {
+            StringBuilder sb = new StringBuilder();
+            for (AgesCard card : list) {
+                sb.append(card.toString(style));
+            }
+            return sb.toString();
+        }
 
         public void showSector(List<AgesCard> list, String title) {
 
             switch (title) {
 
                 case "政府區":
-                    showSectorStyle政府區(list, title);
+                    showNewLine();
+                    showSectorStyle(list, title, STYLE_政府區);
                     break;
-                    
+
                 case "戰術區":
                 case "領袖區":
-                    System.out.print("  " + title + " ");
-                    for (AgesCard card : list) {
-                        System.out.print("" + card.toString(STYLE_領袖區));
-                    }
+//                    System.out.print("  " + title + " ");
+//                    for (AgesCard card : list) {
+//                        System.out.print("" + card.toString(STYLE_領袖區));
+//                    }
+                    showSectorStyle(list, title, STYLE_領袖區);
                     break;
                 case "建造中的奇蹟區":
-                    System.out.print("\n  " + title + " ");
-                    for (AgesCard card : list) {
-                        System.out.print("" + card.toString(102));
-                    }
+//                    System.out.print("\n  " + title + " ");
+//                    for (AgesCard card : list) {
+//                        System.out.print("" + card.toString(102));
+//                    }
+                    showSectorStyle(list, title, 102);
+
                     break;
                 case "已完成的奇蹟":
-                    System.out.print("\n  " + title + " ");
-                    for (AgesCard card : list) {
-                        System.out.print("" + card.toString(103));
-                    }
+//                    System.out.print("\n  " + title + " ");
+//                    for (AgesCard card : list) {
+//                        System.out.print("" + card.toString(103));
+//                    }
+//                    showNewLine();
+                    showSectorStyle(list, title, 103);
                     break;
 
                 case "劇院區":
-                case "競技場區":
-                case "圖書館區":
-                case "實驗室":
-                case "神廟區":
-                case "步兵區":
+                case "競技場":
+                case "圖書館":
                 case "騎兵區":
                 case "炮兵區":
                 case "空軍區":
+                    showSectorStyle(list, title, 104);
 
-                    System.out.println("  ");
-                    System.out.print("  " + title + " ");
-                    for (AgesCard card : list) {
-                        System.out.print("" + card.toString(104));
-                    }
                     break;
 
+                case "實驗室":
+                case "神廟區":
                 case "農場區":
                 case "礦山區":
-                    System.out.println("  ");
-                    System.out.print("  " + title + " ");
-                    for (AgesCard card : list) {
-                        System.out.print("" + card.toString(8));
-                    }
-                    break;
-                case "行動牌區":
+                case "步兵區":
 
-                    System.out.println("  ");
-                    System.out.print("" + title + " ");
-                    int j = 0;
-                    for (AgesCard card : list) {
-                        System.out.print("" + (j++) + card.toString(105));
-                    }
+                    showNewLine();
+                    showSectorStyle(list, title, STYLE_實驗室);
+                    break;
+
+                case "行動牌區":
+//
+//                    System.out.println("  ");
+//                    System.out.print("" + title + " ");
+//                    int j = 0;
+//                    for (AgesCard card : list) {
+//                        System.out.print("" + (j++) + card.toString(105));
+//                    }
+                    showSectorStyle(list, title, 105);
+
                     break;
                 case "手牌內政牌區":
-                    System.out.println("  ");
-                    System.out.print("" + title + " ");
-                    int k = 0;
-                    for (AgesCard card : list) {
-                        System.out.print("" + (k++) + card.toString(4));
-                    }
+//                    System.out.println("  ");
+//                    System.out.print("" + title + " ");
+//                    int k = 0;
+//                    for (AgesCard card : list) {
+//                        System.out.print("" + (k++) + card.toString(4));
+//                    }
+                    showNewLine();
+
+                    showSectorStyle(list, title, 4);
+
                     break;
                 case "手牌軍事牌區":
-                    System.out.println("  ");
-                    System.out.print("" + title + " ");
-                    int p = 0;
-                    for (AgesCard card : list) {
-                        System.out.print("" + (p++) + card.toString(5));
-                    }
+//                    System.out.println("  ");
+//                    System.out.print("" + title + " ");
+//                    int p = 0;
+//                    for (AgesCard card : list) {
+//                        System.out.print("" + (p++) + card.toString(5));
+//                    }
+                    showNewLine();
+                    showSectorStyle(list, title, 5);
+
                     break;
                 case "戰爭區":
-                    System.out.print("  " + title + " ");
-                    for (AgesCard card : list) {
-                        System.out.print("" + card.toString(101));
-                    }
+//                    System.out.print("  " + title + " ");
+//                    for (AgesCard card : list) {
+//                        System.out.print("" + card.toString(101));
+//                    }
+                    showSectorStyle(list, title, 101);
+
+                    break;
+                case "未分類":
+                    showSectorStyle(list, title, STYLE_普通);
                     break;
                 default:
-                    System.out.println("");
-                    System.out.print("" + title + " ");
-                    for (AgesCard card : list) {
-                        System.out.print("" + card.toString(4));
+//                    System.out.println("");
+//                    System.out.print("" + title + " ");
+//                    for (AgesCard card : list) {
+//                        System.out.print("" + card.toString(4));
+//
+//                    }
+                    showNewLine();
+                    showSectorStyle(list, title, 104);
 
-                    }
             }
 
         }
 
         public void show() {
             System.out.println("\n  === " + name + " ===");
-            內政點數.show("內政點數");
-            軍事點數.show("軍事點數");
-            建築上限.show("建築上限");
+            內政點數.show("內政點數【白】");
+            軍事點數.show("軍事點數【紅】");
             內政手牌上限.show("內政手牌上限");
             軍事手牌上限.show("軍事手牌上限");
-            殖民點數.show("殖民點數");
+            建築上限.show("建築上限");
             System.out.println("");
 
             文化.show("文化");
@@ -2835,31 +2860,36 @@ public class Ages implements AgesCommon {
             軍力.show("軍力");
             System.out.println("");
 
-            資源庫_藍點.show("資源庫【藍】");
-            人力庫_黃點.show("人力庫【黃】");
-            笑臉_幸福指數.show("笑臉【】");
             工人區_黃點.show("工人區【黃】");
+            人力庫_黃點.show("人力庫【黃】");
+            笑臉_幸福指數.show("笑臉");
+            資源庫_藍點.show("資源庫【藍】");
+            殖民點數.show("殖民點數");
             System.out.println("");
 
             showSector(政府區, "政府區");
             showSector(領袖區, "領袖區");
+            showSector(建造中的奇蹟區, "建造中的奇蹟區");
+            show建造中的奇蹟區Stages();
+
+            showSector(實驗室, "實驗室");
             showSector(劇院區, "劇院區");
             showSector(競技場區, "競技場");
             showSector(圖書館區, "圖書館");
-            showSector(實驗室, "實驗室");
+            showSector(已完成的奇蹟, "已完成的奇蹟");
+            showSector(未分類區, "未分類");
+
             showSector(神廟區, "神廟區");
             showSector(農場區, "農場區");
             showSector(礦山區, "礦山區");
+
             showSector(步兵區, "步兵區");
             showSector(騎兵區, "騎兵區");
             showSector(炮兵區, "炮兵區");
             showSector(空軍區, "空軍區");
-            showSector(未分類區, "未分類");
+
             showSector(戰術區, "戰術區");
             showSector(戰爭區, "戰爭區");
-            showSector(建造中的奇蹟區, "建造中的奇蹟區");
-            show建造中的奇蹟區Stages();
-            showSector(已完成的奇蹟, "已完成的奇蹟");
             showSector(手牌內政牌區, "手牌內政牌區");
             showSector(行動牌區, "行動牌區");
             showSector(手牌軍事牌區, "手牌軍事牌區");
