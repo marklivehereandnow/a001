@@ -9,6 +9,7 @@ package com.livehereandnow.ages.engine;
 import com.livehereandnow.ages.card.AgesCard;
 import com.livehereandnow.ages.card.AgesCardFactory;
 import com.livehereandnow.ages.card.AgesCommon;
+import static com.livehereandnow.ages.card.AgesCommon.STYLE_政府區;
 import com.livehereandnow.ages.exception.AgesException;
 import com.livehereandnow.ages.field.Points;
 import com.livehereandnow.ages.field.Score;
@@ -38,7 +39,7 @@ public class Ages implements AgesCommon {
 //    final String[] STAGE_NAME = {" ", "政治階段", "內政階段"};
     final String[] STAGE_NAME = {" ", "政治", "內政"};
 //    final String[] AGE_NAME = {"A", "I", "II", "III"};
-     final String FULLWIDTH_COLON = "\uFF1A";//;
+    final String FULLWIDTH_COLON = "\uFF1A";//;
     final String FULLWIDTH_SPACE = "\u3000";
     final String FULLWIDTH_LT_SIGN = "\uFF1C";// <
     final String FULLWIDTH_EQ_SIGN = "\uFF1D";// =
@@ -75,7 +76,7 @@ public class Ages implements AgesCommon {
         int p1 = -1;//指令的參數是什麼，給予初值為-1，-1通常是指不能用的值
         int p2 = -1;
         int p3 = -1;
-        
+
         //
         // 2. parser to words 
         //
@@ -99,16 +100,15 @@ public class Ages implements AgesCommon {
         keyword = tokens.get(0);//指令的關鍵字是第0個字，例如take 3的take
 
         if (tokenCnt == 1) {//如果輸入的是一個字的話
-            
-            try{
-                int id=Integer.parseInt(keyword);
+
+            try {
+                int id = Integer.parseInt(keyword);
                 return doCmd(id);
-            }catch(Exception ex){
+            } catch (Exception ex) {
                 doCmd(keyword);
                 return true;
             }
-            
-            
+
         }
         if (tokenCnt == 2) {//如果輸入的是2個字的話
             try {
@@ -120,8 +120,8 @@ public class Ages implements AgesCommon {
             doCmd(keyword, p1);
             return true;
         }
-        
-          if (tokenCnt == 3) {//如果輸入的是2個字的話
+
+        if (tokenCnt == 3) {//如果輸入的是2個字的話
             try {
                 p1 = Integer.parseInt(tokens.get(1));
                 p2 = Integer.parseInt(tokens.get(2));
@@ -129,9 +129,9 @@ public class Ages implements AgesCommon {
                 System.out.println("Parameter must be integer!");
                 return false;
             }
-            return doCmd(keyword, p1,p2);
+            return doCmd(keyword, p1, p2);
         }
-        
+
         // ver 0.62 for upgrad 3 0 1, Upgrad Farm from Age A to Age I
         if (tokenCnt == 4) {//如果輸入的是3個字的話
             try {
@@ -142,10 +142,8 @@ public class Ages implements AgesCommon {
                 System.out.println("Parameter must be integer!");
                 return false;
             }
-            return doCmd(keyword, p1,p2,p3);
+            return doCmd(keyword, p1, p2, p3);
         }
-        
-        
 
         //
         System.out.println("Cureently command must be one or two words only!");
@@ -153,19 +151,19 @@ public class Ages implements AgesCommon {
 
     }
 
-    public static void main(String[] args) throws AgesException, IOException{
-        Ages ages=new Ages();
-              InputStreamReader cin = new InputStreamReader(System.in);
+    public static void main(String[] args) throws AgesException, IOException {
+        Ages ages = new Ages();
+        InputStreamReader cin = new InputStreamReader(System.in);
         BufferedReader in = new BufferedReader(cin);
-//        engine.getField().show();
+//        engine.getField().showSector();
         while (true) {
-            System.out.print("" +ages.getCurrentPlayerName()+ " >> ");
+            System.out.print("" + ages.getCurrentPlayerName() + " >> ");
             ages.preParser(in.readLine());
 //            engine.doCmd("9999");
-        
+
         }
     }
-            
+
     public Player get當前操作玩家() {
         return 當前操作玩家;
     }
@@ -392,6 +390,22 @@ public class Ages implements AgesCommon {
 
     }
 
+    public void show時代回合玩家階段() {
+            // draft style, quick to showSector
+        // System.out.println("時代" + FULLWIDTH_COLON + AGE_NAME[ 當前時代] + "\u3000\uFF21回合:" + round.getVal() + " 玩家:" + currentPlayer.getName() + " 階段(政治/內政):" + STAGE_NAME[現在階段]);
+
+        // better style, easy to maintain
+        StringBuilder sb = new StringBuilder();
+        sb.append(FULLWIDTH_EQ_SIGN).append(FULLWIDTH_EQ_SIGN).append(FULLWIDTH_EQ_SIGN);
+        sb.append(FULLWIDTH_SPACE).append("時代").append(FULLWIDTH_COLON).append(AGE_NAME[ 當前時代]);
+        sb.append(FULLWIDTH_SPACE).append("回合").append(FULLWIDTH_COLON).append(round.getVal());
+        sb.append(FULLWIDTH_SPACE).append("玩家").append(FULLWIDTH_COLON).append(currentPlayer.getName());
+        sb.append(FULLWIDTH_SPACE).append("階段").append(FULLWIDTH_COLON).append(STAGE_NAME[現在階段]);
+        sb.append(FULLWIDTH_SPACE);
+        sb.append(FULLWIDTH_EQ_SIGN).append(FULLWIDTH_EQ_SIGN).append(FULLWIDTH_EQ_SIGN);
+        System.out.println(sb.toString());
+    }
+
     private void init() {
         field = new Field();
         reset();
@@ -563,11 +577,15 @@ public class Ages implements AgesCommon {
             case "s":
             case "status":
 //                return core.doStatus();
-//                field.show(0);
-                show(0);
+//                field.showSector(0);
+//                showSector(0);
+                field.show卡牌列();
+                p1.show();
+                p2.show();
                 return " just did field.show(0)";
             case "ss":
-                show(10);
+//                showSector(10);
+                show時代回合玩家階段();
                 return " just did field.show(10)";
             case "version":
                 return doVersion();
@@ -601,7 +619,8 @@ public class Ages implements AgesCommon {
         switch (keyword) {
             case "status":
             case "s":
-                return doStatus(val);
+//                showSector(val)
+                return true;
             case "list":
                 return doList(val);
 
@@ -877,7 +896,8 @@ public class Ages implements AgesCommon {
     }
 
     private boolean doStatus(int val) {
-        field.show(val);
+//        field.showSector(val);
+        System.out.println("DEBUG...");
         return true;
     }
 
@@ -1090,7 +1110,7 @@ public class Ages implements AgesCommon {
         actTakeCard(4);
         actPlayCard(0);
         doChangeTurn();
-        field.show(1);
+//        field.showSector(1);
         return "測試";
     }
 
@@ -1279,14 +1299,15 @@ public class Ages implements AgesCommon {
 
     private void show(int i) {
         if (i == 10) {
-            field.show(i);
+
+//            field.showSector(i);
             return;
         }
         if (i == 123) {
-            field.show(i);
+//            field.showSector(i);
             return;
         }
-        field.show(i);
+//        field.showSector(i);
         p1.show();
         p2.show();
     }
@@ -1477,118 +1498,118 @@ public class Ages implements AgesCommon {
 
         }
 //    
-//    public void show(int style) {
+//    public void showSector(int style) {
 //        switch (style) {
 //            case 0:
-//                round.show();
-//                卡牌列.show(1);
+//                round.showSector();
+//                卡牌列.showSector(1);
 //                System.out.println("Current Player: " + currentPlayer.name);
 //                break;
 //            case 1:
-//                p1.show(1);
+//                p1.showSector(1);
 //                break;
 //            case 2:
-//                p2.show(1);
+//                p2.showSector(1);
 //                break;
 //            case 11:
-//                p1.show(2);
+//                p1.showSector(2);
 //                break;
 //            case 22:
-//                p2.show(2);
+//                p2.showSector(2);
 //                break;
 //
 //            default:
-//                show();
+//                showSector();
 //        }
 //    }
 
-//    public void show() {
-//        round.show();
+//    public void showSector() {
+//        round.showSector();
 //        System.out.println("\nCurrent Player: " + currentPlayer.name);
-//        show(卡牌列, "卡牌列");
-//        show(時代A內政牌, "時代A內政牌");
-//        show(時代I內政牌, "時代I內政牌");
-//        show(時代II內政牌, "時代II內政牌");
-//        show(時代III內政牌, "時代III內政牌");
-//        show(時代A軍事牌, "時代A軍事牌");
-//        show(時代I軍事牌, "時代I軍事牌");
-//        show(時代II軍事牌, "時代II軍事牌");
-//        show(時代III軍事牌, "時代III軍事牌");
+//        showSector(卡牌列, "卡牌列");
+//        showSector(時代A內政牌, "時代A內政牌");
+//        showSector(時代I內政牌, "時代I內政牌");
+//        showSector(時代II內政牌, "時代II內政牌");
+//        showSector(時代III內政牌, "時代III內政牌");
+//        showSector(時代A軍事牌, "時代A軍事牌");
+//        showSector(時代I軍事牌, "時代I軍事牌");
+//        showSector(時代II軍事牌, "時代II軍事牌");
+//        showSector(時代III軍事牌, "時代III軍事牌");
 //        for (Player player : allPlayers) {
-//            player.show();
+//            player.showSector();
 //        }
 //    }
-        public void show時代回合玩家階段() {
-            // draft style, quick to show
-            // System.out.println("時代" + FULLWIDTH_COLON + AGE_NAME[ 當前時代] + "\u3000\uFF21回合:" + round.getVal() + " 玩家:" + currentPlayer.getName() + " 階段(政治/內政):" + STAGE_NAME[現在階段]);
-
-            // better style, easy to maintain
-            StringBuilder sb = new StringBuilder();
-            sb.append(FULLWIDTH_EQ_SIGN).append(FULLWIDTH_EQ_SIGN).append(FULLWIDTH_EQ_SIGN);
-            sb.append(FULLWIDTH_SPACE).append("時代").append(FULLWIDTH_COLON).append(AGE_NAME[ 當前時代]);
-            sb.append(FULLWIDTH_SPACE).append("回合").append(FULLWIDTH_COLON).append(round.getVal());
-            sb.append(FULLWIDTH_SPACE).append("玩家").append(FULLWIDTH_COLON).append(currentPlayer.getName());
-            sb.append(FULLWIDTH_SPACE).append("階段").append(FULLWIDTH_COLON).append(STAGE_NAME[現在階段]);
-            sb.append(FULLWIDTH_SPACE);
-            sb.append(FULLWIDTH_EQ_SIGN).append(FULLWIDTH_EQ_SIGN).append(FULLWIDTH_EQ_SIGN);
-            System.out.println(sb.toString());
+        public void show卡牌列() {
+            show(卡牌列, "卡牌列");
         }
 
-        public void show(int style) {
-
-            switch (style) {
-                case 0:
-//                System.out.println("**********************當前時代:" + this.當前時代 + "  回合:" + round.getVal() + "  Current Player: " + currentPlayer.getName() + " ******************************************************");
-                    show(卡牌列, "卡牌列");
-                    show(當前事件, "當前事件");
-                    show(未來事件, "未來事件");
-                    show(現在發生事件, "現在發生事件");
-                    show(時代A軍事牌, "時代A軍事牌");
-                    show(時代I軍事牌, "時代I軍事牌");
-                    show(時代II軍事牌, "時代II軍事牌");
-                    show(時代III軍事牌, "時代III軍事牌");
-//                allPlayers.stream().forEach((p) -> {
-//                    p.show();
-//                });
-                    break;
-                case 1:
-//                System.out.println("**********************當前時代:" + this.當前時代 + "  回合:" + round.getVal() + "  Current Player: " + currentPlayer.getName() + " ******************************************************");
-                    show(卡牌列, "卡牌列");
-                    show(時代A內政牌, "時代A內政牌");
-                    show(時代I內政牌, "時代I內政牌");
-                    show(時代II內政牌, "時代II內政牌");
-                    show(時代III內政牌, "時代III內政牌");
-                    show(時代A軍事牌, "時代A軍事牌");
-                    show(時代I軍事牌, "時代I軍事牌");
-                    show(時代II軍事牌, "時代II軍事牌");
-                    show(時代III軍事牌, "時代III軍事牌");
-//                allPlayers.stream().forEach((p) -> {
-//                    p.show();
-//                });
-                    break;
-                case 10:
-                    show時代回合玩家階段();
-                    break;
-
-                case 123:
-                    show時代回合玩家階段();
-                    show(卡牌列, "卡牌列");
-                    show(當前事件, "當前事件");
-                    show(未來事件, "未來事件");
-                    show(現在發生事件, "現在發生事件");
-                    show(時代A軍事牌, "時代A軍事牌");
-                    show(時代I軍事牌, "時代I軍事牌");
-                    show(時代II軍事牌, "時代II軍事牌");
-                    show(時代III軍事牌, "時代III軍事牌");
-                    System.out.println("");
-                    break;
-                default:
-                    show(卡牌列, "卡牌列");
-//                currentPlayer.show();
-            }
-
+        public void show當前事件未來事件() {
+            show(現在發生事件, "現在發生事件");
+            show(當前事件, "當前事件");
+            show(未來事件, "未來事件");
         }
 
+        public void show時代AIII軍事牌() {
+            show(時代A軍事牌, "時代A軍事牌");
+            show(時代I軍事牌, "時代I軍事牌");
+            show(時代II軍事牌, "時代II軍事牌");
+            show(時代III軍事牌, "時代III軍事牌");
+        }
+
+//        public void showSector(int style) {
+//
+//            switch (style) {
+//                case 0:
+////                System.out.println("**********************當前時代:" + this.當前時代 + "  回合:" + round.getVal() + "  Current Player: " + currentPlayer.getName() + " ******************************************************");
+//                    showSector(卡牌列, "卡牌列");
+//                    showSector(當前事件, "當前事件");
+//                    showSector(未來事件, "未來事件");
+//                    showSector(現在發生事件, "現在發生事件");
+//                    showSector(時代A軍事牌, "時代A軍事牌");
+//                    showSector(時代I軍事牌, "時代I軍事牌");
+//                    showSector(時代II軍事牌, "時代II軍事牌");
+//                    showSector(時代III軍事牌, "時代III軍事牌");
+////                allPlayers.stream().forEach((p) -> {
+////                    p.showSector();
+////                });
+//                    break;
+//                case 1:
+////                System.out.println("**********************當前時代:" + this.當前時代 + "  回合:" + round.getVal() + "  Current Player: " + currentPlayer.getName() + " ******************************************************");
+//                    showSector(卡牌列, "卡牌列");
+//                    showSector(時代A內政牌, "時代A內政牌");
+//                    showSector(時代I內政牌, "時代I內政牌");
+//                    showSector(時代II內政牌, "時代II內政牌");
+//                    showSector(時代III內政牌, "時代III內政牌");
+//                    showSector(時代A軍事牌, "時代A軍事牌");
+//                    showSector(時代I軍事牌, "時代I軍事牌");
+//                    showSector(時代II軍事牌, "時代II軍事牌");
+//                    showSector(時代III軍事牌, "時代III軍事牌");
+////                allPlayers.stream().forEach((p) -> {
+////                    p.showSector();
+////                });
+//                    break;
+//                case 10:
+//                    show時代回合玩家階段();
+//                    break;
+//
+//                case 123:
+//                    show時代回合玩家階段();
+//                    showSector(卡牌列, "卡牌列");
+//                    showSector(當前事件, "當前事件");
+//                    showSector(未來事件, "未來事件");
+//                    showSector(現在發生事件, "現在發生事件");
+//                    showSector(時代A軍事牌, "時代A軍事牌");
+//                    showSector(時代I軍事牌, "時代I軍事牌");
+//                    showSector(時代II軍事牌, "時代II軍事牌");
+//                    showSector(時代III軍事牌, "時代III軍事牌");
+//                    System.out.println("");
+//                    break;
+//                default:
+//                    showSector(卡牌列, "卡牌列");
+////                currentPlayer.showSector();
+//            }
+//
+//        }
         public String getServerStatus() {
             StringBuilder sb = new StringBuilder();
             for (AgesCard card : 卡牌列) {
@@ -2690,17 +2711,26 @@ public class Ages implements AgesCommon {
             }
         }
 
-        public void show(List<AgesCard> list, String title) {
+        public void showSectorStyle政府區(List<AgesCard> list, String title) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("\n");
+            sb.append(FULLWIDTH_SPACE);
+            for (AgesCard card : list) {
+                sb.append(card.toString(STYLE_政府區));
+            }
+            System.out.println(sb.toString());
+        }
+        
+        
+
+        public void showSector(List<AgesCard> list, String title) {
 
             switch (title) {
 
                 case "政府區":
-                    System.out.println("  ");
-                    System.out.print("  " + title + " ");
-                    for (AgesCard card : list) {
-                        System.out.print("" + card.toString(STYLE_政府區));
-                    }
+                    showSectorStyle政府區(list, title);
                     break;
+                    
                 case "戰術區":
                 case "領袖區":
                     System.out.print("  " + title + " ");
@@ -2811,28 +2841,28 @@ public class Ages implements AgesCommon {
             工人區_黃點.show("工人區【黃】");
             System.out.println("");
 
-            show(政府區, "政府區");
-            show(領袖區, "領袖區");
-            show(劇院區, "劇院區");
-            show(競技場區, "競技場區");
-            show(圖書館區, "圖書館區");
-            show(實驗室, "實驗室");
-            show(神廟區, "神廟區");
-            show(農場區, "農場區");
-            show(礦山區, "礦山區");
-            show(步兵區, "步兵區");
-            show(騎兵區, "騎兵區");
-            show(炮兵區, "炮兵區");
-            show(空軍區, "空軍區");
-            show(未分類區, "未分類區");
-            show(戰術區, "戰術區");
-            show(戰爭區, "戰爭區");
-            show(建造中的奇蹟區, "建造中的奇蹟區");
+            showSector(政府區, "政府區");
+            showSector(領袖區, "領袖區");
+            showSector(劇院區, "劇院區");
+            showSector(競技場區, "競技場");
+            showSector(圖書館區, "圖書館");
+            showSector(實驗室, "實驗室");
+            showSector(神廟區, "神廟區");
+            showSector(農場區, "農場區");
+            showSector(礦山區, "礦山區");
+            showSector(步兵區, "步兵區");
+            showSector(騎兵區, "騎兵區");
+            showSector(炮兵區, "炮兵區");
+            showSector(空軍區, "空軍區");
+            showSector(未分類區, "未分類");
+            showSector(戰術區, "戰術區");
+            showSector(戰爭區, "戰爭區");
+            showSector(建造中的奇蹟區, "建造中的奇蹟區");
             show建造中的奇蹟區Stages();
-            show(已完成的奇蹟, "已完成的奇蹟");
-            show(手牌內政牌區, "手牌內政牌區");
-            show(行動牌區, "行動牌區");
-            show(手牌軍事牌區, "手牌軍事牌區");
+            showSector(已完成的奇蹟, "已完成的奇蹟");
+            showSector(手牌內政牌區, "手牌內政牌區");
+            showSector(行動牌區, "行動牌區");
+            showSector(手牌軍事牌區, "手牌軍事牌區");
             System.out.println("");
         }
 
