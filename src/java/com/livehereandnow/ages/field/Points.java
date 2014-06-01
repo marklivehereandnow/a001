@@ -61,4 +61,8 @@ public class Points {
 //        System.out.print(title+" "+  toString()+"  ");
         System.out.printf("%s %3d ",getSameSize(title) , points);
     }
+      public void show(String displayTitle) {
+//        System.out.print(title+" "+  toString()+"  ");
+        System.out.printf("%s %3d ",getSameSize(displayTitle) , points);
+    }
 }

@@ -8,6 +8,7 @@ package com.livehereandnow.ages.engine;
 //import com.livehereandnow.ages.card.Card;
 import com.livehereandnow.ages.card.AgesCard;
 import com.livehereandnow.ages.card.AgesCardFactory;
+import com.livehereandnow.ages.card.AgesCardShowStyle;
 import com.livehereandnow.ages.exception.AgesException;
 import com.livehereandnow.ages.field.Points;
 import com.livehereandnow.ages.field.Score;
@@ -31,8 +32,20 @@ import java.util.SortedSet;
  *
  * @author mark
  */
-public class Ages {
+public class Ages implements AgesCardShowStyle {
 
+    // constants
+//    final String[] STAGE_NAME = {" ", "政治階段", "內政階段"};
+    final String[] STAGE_NAME = {" ", "政治", "內政"};
+//    final String[] AGE_NAME = {"A", "I", "II", "III"};
+    final String[] AGE_NAME = {"\uFF21", "\uFF29", "\uFF29\uFF29", "\uFF29\uFF29\uFF29"};//http://www.unicode.org/charts/PDF/UFF00.pdf
+    final String FULLWIDTH_COLON = "\uFF1A";//;
+    final String FULLWIDTH_SPACE = "\u3000";
+    final String FULLWIDTH_LT_SIGN = "\uFF1C";// <
+    final String FULLWIDTH_EQ_SIGN = "\uFF1D";// =
+    final String FULLWIDTH_GT_SIGN = "\uFF1E";// >
+
+    // variables
     private Player p1;
     private Player p2;
     private Player currentPlayer;
@@ -54,6 +67,106 @@ public class Ages {
     private List<AgesCard> 當前事件;
     private List<AgesCard> 現在發生事件;
 
+    public boolean preParser(String cmd) throws IOException, AgesException {
+        //
+        // 1. init
+        //
+        int tokenCnt = 0;//命令行裡共有幾個字，給予初值為0
+        String keyword = "";//指令是什麼，給予初值空字符串
+        int p1 = -1;//指令的參數是什麼，給予初值為-1，-1通常是指不能用的值
+        int p2 = -1;
+        int p3 = -1;
+        
+        //
+        // 2. parser to words 
+        //
+        //將命令行的句子拆解為字，以空格格開為依據，空格都不記
+        String[] strTokens = cmd.split(" ");
+        List<String> tokens = new ArrayList<>();
+        for (String item : strTokens) {
+            if (item.length() > 0) {
+                tokens.add(item);
+            }
+        }
+        tokenCnt = tokens.size();//賦予變量tokenCnt真正的值，真正的值是指到底打個幾個字
+
+        //
+        // 3. to execute command based on size
+        //
+        if (tokenCnt == 0) {//when simple enter
+            return true; // silently ignore it
+        }
+        // 
+        keyword = tokens.get(0);//指令的關鍵字是第0個字，例如take 3的take
+
+        if (tokenCnt == 1) {//如果輸入的是一個字的話
+            
+            try{
+                int id=Integer.parseInt(keyword);
+                return doCmd(id);
+            }catch(Exception ex){
+                doCmd(keyword);
+                return true;
+            }
+            
+            
+        }
+        if (tokenCnt == 2) {//如果輸入的是2個字的話
+            try {
+                p1 = Integer.parseInt(tokens.get(1));
+            } catch (Exception ex) {
+                System.out.println("Parameter must be integer!");
+                return false;
+            }
+            doCmd(keyword, p1);
+            return true;
+        }
+        
+          if (tokenCnt == 3) {//如果輸入的是2個字的話
+            try {
+                p1 = Integer.parseInt(tokens.get(1));
+                p2 = Integer.parseInt(tokens.get(2));
+            } catch (Exception ex) {
+                System.out.println("Parameter must be integer!");
+                return false;
+            }
+            return doCmd(keyword, p1,p2);
+        }
+        
+        // ver 0.62 for upgrad 3 0 1, Upgrad Farm from Age A to Age I
+        if (tokenCnt == 4) {//如果輸入的是3個字的話
+            try {
+                p1 = Integer.parseInt(tokens.get(1));
+                p2 = Integer.parseInt(tokens.get(2));
+                p3 = Integer.parseInt(tokens.get(3));
+            } catch (Exception ex) {
+                System.out.println("Parameter must be integer!");
+                return false;
+            }
+            return doCmd(keyword, p1,p2,p3);
+        }
+        
+        
+
+        //
+        System.out.println("Cureently command must be one or two words only!");
+        return false;
+
+    }
+
+    public static void main(String[] args) throws AgesException, IOException{
+        Ages ages=new Ages();
+              InputStreamReader cin = new InputStreamReader(System.in);
+        BufferedReader in = new BufferedReader(cin);
+//        engine.getField().show();
+        while (true) {
+            System.out.print("" +ages.getCurrentPlayerName()+ " >> ");
+            ages.preParser(in.readLine());
+//            engine.doCmd("9999");
+        
+        }
+    }
+            
     public Player get當前操作玩家() {
         return 當前操作玩家;
     }
@@ -203,7 +316,6 @@ public class Ages {
 //    public void setCurrentPlayer(Player currentPlayer) {
 //        this.currentPlayer = currentPlayer;
 //    }
-
     public Player getP1() {
         return p1;
     }
@@ -276,7 +388,7 @@ public class Ages {
 
     public Ages() throws AgesException {
         server = new AgesGameServerJDBC();
-       reset();
+        reset();
         init();
 
     }
@@ -391,7 +503,22 @@ public class Ages {
 
     public boolean doCmd(int id) throws IOException, AgesException {
 //        return field.
-        field.showCardInfo(id);
+        if (id == 0) {
+            show(123);
+            return true;
+        }
+        if (id == 1) {
+            p1.show();
+            return true;
+        }
+        if (id == 2) {
+            p2.show();
+            return true;
+        }
+
+        if (id > 1000 && id < 9999) {
+            field.showCardInfo(id);
+        }
 
         return true;
     }
@@ -441,7 +568,7 @@ public class Ages {
                 show(0);
                 return " just did field.show(0)";
             case "ss":
-                field.show(10);
+                show(10);
                 return " just did field.show(10)";
             case "version":
                 return doVersion();
@@ -654,7 +781,7 @@ public class Ages {
         //
         reset();
         set現在階段(內政階段);
-        System.out.println(" just update set現在階段 to be " + get當前時代());
+//        System.out.println(" just update set現在階段 to be " + get當前時代());
         //卡牌列
         for (int k = 0; k < 13; k++) {
             field.moveOneCard(field.get時代A內政牌(), 0, field.getCardRow());
@@ -799,7 +926,7 @@ public class Ages {
                 set當前時代(4);
                 System.out.println("沒牌了");
                 field.getCardRow().add(k, temp);//在卡牌列同樣的位子，補上一張空卡
-                if (currentPlayer== getP1()) {
+                if (currentPlayer == getP1()) {
                     System.out.println("遊戲要結束了");
                 } else {
                     System.out.println("遊戲下回合要結束了");
@@ -1067,7 +1194,7 @@ public class Ages {
 //        System.out.println(field.get現在發生事件().get(0).getAction());
         switch (val) {
             case 8888:
-                System.out.println( currentPlayer.get文明所需的笑臉());
+                System.out.println(currentPlayer.get文明所需的笑臉());
                 break;
             case 9999:
                 getP1().更新文明板塊上所提供的數據();
@@ -1152,7 +1279,15 @@ public class Ages {
     }
 
     private void show(int i) {
-        field.show(0);
+        if (i == 10) {
+            field.show(i);
+            return;
+        }
+        if (i == 123) {
+            field.show(i);
+            return;
+        }
+        field.show(i);
         p1.show();
         p2.show();
     }
@@ -1300,9 +1435,10 @@ public class Ages {
             init();
         }
 
-        public void init(){
-            
+        public void init() {
+
         }
+
         public List<AgesCard> getQryCards() {
             return qryCards;
         }
@@ -1383,6 +1519,22 @@ public class Ages {
 //            player.show();
 //        }
 //    }
+        public void show時代回合玩家階段() {
+            // draft style, quick to show
+            // System.out.println("時代" + FULLWIDTH_COLON + AGE_NAME[ 當前時代] + "\u3000\uFF21回合:" + round.getVal() + " 玩家:" + currentPlayer.getName() + " 階段(政治/內政):" + STAGE_NAME[現在階段]);
+
+            // better style, easy to maintain
+            StringBuilder sb = new StringBuilder();
+            sb.append(FULLWIDTH_EQ_SIGN).append(FULLWIDTH_EQ_SIGN).append(FULLWIDTH_EQ_SIGN);
+            sb.append(FULLWIDTH_SPACE).append("時代").append(FULLWIDTH_COLON).append(AGE_NAME[ 當前時代]);
+            sb.append(FULLWIDTH_SPACE).append("回合").append(FULLWIDTH_COLON).append(round.getVal());
+            sb.append(FULLWIDTH_SPACE).append("玩家").append(FULLWIDTH_COLON).append(currentPlayer.getName());
+            sb.append(FULLWIDTH_SPACE).append("階段").append(FULLWIDTH_COLON).append(STAGE_NAME[現在階段]);
+            sb.append(FULLWIDTH_SPACE);
+            sb.append(FULLWIDTH_EQ_SIGN).append(FULLWIDTH_EQ_SIGN).append(FULLWIDTH_EQ_SIGN);
+            System.out.println(sb.toString());
+        }
+
         public void show(int style) {
 
             switch (style) {
@@ -1416,8 +1568,20 @@ public class Ages {
 //                });
                     break;
                 case 10:
-                    String[] stage = {" ", "政治階段", "內政階段"};
-//                System.out.println("當前時代:" + this.當前時代 + "  回合:" + round.getVal() + "  Current Player: " + currentPlayer.getName() + " 目前階段(政治/內政):" + stage[this.現在階段]);
+                    show時代回合玩家階段();
+                    break;
+
+                case 123:
+                    show時代回合玩家階段();
+                    show(卡牌列, "卡牌列");
+                    show(當前事件, "當前事件");
+                    show(未來事件, "未來事件");
+                    show(現在發生事件, "現在發生事件");
+                    show(時代A軍事牌, "時代A軍事牌");
+                    show(時代I軍事牌, "時代I軍事牌");
+                    show(時代II軍事牌, "時代II軍事牌");
+                    show(時代III軍事牌, "時代III軍事牌");
+                    System.out.println("");
                     break;
                 default:
                     show(卡牌列, "卡牌列");
@@ -2535,14 +2699,14 @@ public class Ages {
                     System.out.println("  ");
                     System.out.print("  " + title + " ");
                     for (AgesCard card : list) {
-                        System.out.print("" + card.toString(1));
+                        System.out.print("" + card.toString(STYLE_政府區));
                     }
                     break;
                 case "戰術區":
                 case "領袖區":
                     System.out.print("  " + title + " ");
                     for (AgesCard card : list) {
-                        System.out.print("" + card.toString(101));
+                        System.out.print("" + card.toString(STYLE_領袖區));
                     }
                     break;
                 case "建造中的奇蹟區":
@@ -2627,33 +2791,32 @@ public class Ages {
 
         public void show() {
             System.out.println("\n  === " + name + " ===");
-            內政點數.show();
-            軍事點數.show();
-            建築上限.show();
-//            System.out.println("");
-            內政手牌上限.show();
-            軍事手牌上限.show();
-            殖民點數.show();
+            內政點數.show("內政點數");
+            軍事點數.show("軍事點數");
+            建築上限.show("建築上限");
+            內政手牌上限.show("內政手牌上限");
+            軍事手牌上限.show("軍事手牌上限");
+            殖民點數.show("殖民點數");
             System.out.println("");
-            文化.show();
-            文化生產_當回合.show();
-            科技.show();
-            科技生產_當回合.show();
-            軍力.show();
+
+            文化.show("文化");
+            文化生產_當回合.show("文化＋");
+            科技.show("科技");
+            科技生產_當回合.show("科技＋");
+            軍力.show("軍力");
             System.out.println("");
-            資源庫_藍點.show();
-            人力庫_黃點.show();
-            笑臉_幸福指數.show();
-            工人區_黃點.show();
+
+            資源庫_藍點.show("資源庫【藍】");
+            人力庫_黃點.show("人力庫【黃】");
+            笑臉_幸福指數.show("笑臉【】");
+            工人區_黃點.show("工人區【黃】");
             System.out.println("");
+
             show(政府區, "政府區");
             show(領袖區, "領袖區");
-
             show(劇院區, "劇院區");
             show(競技場區, "競技場區");
             show(圖書館區, "圖書館區");
-//        show(實驗室, "實驗室");
-//        show(實驗室, "實驗室");
             show(實驗室, "實驗室");
             show(神廟區, "神廟區");
             show(農場區, "農場區");
@@ -2662,7 +2825,6 @@ public class Ages {
             show(騎兵區, "騎兵區");
             show(炮兵區, "炮兵區");
             show(空軍區, "空軍區");
-
             show(未分類區, "未分類區");
             show(戰術區, "戰術區");
             show(戰爭區, "戰爭區");
@@ -2673,7 +2835,6 @@ public class Ages {
             show(行動牌區, "行動牌區");
             show(手牌軍事牌區, "手牌軍事牌區");
             System.out.println("");
-
         }
 
         public void actPlayCard(int val) {
@@ -2804,7 +2965,7 @@ public class Ages {
                     moveOneCard(this.手牌內政牌區, val, this.未分類區);
             }
 
-        //
+            //
             // 06/16 13:30, by Mark
             //
             update手牌上限();
@@ -3041,7 +3202,7 @@ public class Ages {
                     moveOneCard(this.手牌軍事牌區, val, this.未分類區);
             }
 
-        //
+            //
             // 06/16 13:30, by Mark
             //
             update手牌上限();

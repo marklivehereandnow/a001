@@ -72,7 +72,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "AgesCard.findByCostFood", query = "SELECT a FROM AgesCard a WHERE a.costFood = :costFood"),
     @NamedQuery(name = "AgesCard.findByCostMusic", query = "SELECT a FROM AgesCard a WHERE a.costMusic = :costMusic")})
 //)
-public class AgesCard implements Serializable {
+public class AgesCard implements Serializable , AgesCardShowStyle{
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -652,10 +652,10 @@ public class AgesCard implements Serializable {
         String[] ageStr = {"A", "I", "II", "III", "-"};
 
         switch (style) {
-            case 1:// 政府區
+            case STYLE_政府區:// 政府區
                 StringBuilder sb1 = new StringBuilder();
 //                System.out.println("");
-                sb1.append("[");
+                sb1.append("【");
                 sb1.append(ageStr[age]);
                 sb1.append("");
                 sb1.append(name);
@@ -666,7 +666,7 @@ public class AgesCard implements Serializable {
                 sb1.append(this.effectWhite);
                 sb1.append(" 紅");
                 sb1.append(this.effectRed);
-                sb1.append("] ");
+                sb1.append("】");
 
                 return sb1.toString();
             case 8:// 農場區,礦山區
@@ -733,7 +733,7 @@ public class AgesCard implements Serializable {
                 sb5.append(id);
                 sb5.append("] ");
                 return sb5.toString();
-            case 101:// 領袖區
+            case STYLE_領袖區:// 領袖區
                 StringBuilder sb101 = new StringBuilder();
 //                System.out.println("");
                 sb101.append("【");
