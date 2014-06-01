@@ -10,7 +10,7 @@ package com.livehereandnow.ages.card;
  * @author mark
  */
 public interface AgesCommon {
-
+//    String[] 階段={"unknown","xxx","yyy"};
     int STYLE_政府區 = 100;
     int STYLE_領袖區 = 101;
     int STYLE_實驗室 = 109;

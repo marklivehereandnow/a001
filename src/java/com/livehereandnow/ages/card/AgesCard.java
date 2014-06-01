@@ -662,6 +662,8 @@ public class AgesCard implements Serializable, AgesCommon {
         sb.append(name);
 //        sb.append("-");
 //        sb.append(tag);
+        sb.append(FULLWIDTH_SPACE).append("黃").append(FULLWIDTH_COLON).append(tokenYellow);
+        sb.append(FULLWIDTH_SPACE).append("藍").append(FULLWIDTH_COLON).append(tokenBlue);
         sb.append(FULLWIDTH_SPACE).append("成本{").append(iconPoints).append("}");
         sb.append(FULLWIDTH_SPACE).append("效果{").append(effect).append("}");
 
@@ -753,8 +755,6 @@ public class AgesCard implements Serializable, AgesCommon {
         return sb.toString();
     }
 
-
-    
     public String toString(int style) {
 
         switch (style) {
@@ -774,7 +774,7 @@ public class AgesCard implements Serializable, AgesCommon {
                 return toStringSimple();
         }
     }
-    
+
     @Override
     public String toString() {
         return "AgesCard{" + "seq=" + seq + ", id=" + id + ", name=" + name + ", age=" + age + ", civilMilitary=" + civilMilitary + ", tag=" + tag + ", action=" + action + ", iconPoints=" + iconPoints + ", effect=" + effect + ", cost=" + cost + ", color=" + color + ", \ncnt=" + cnt + ", tokenWhite=" + tokenWhite + ", tokenRed=" + tokenRed + ", tokenYellow=" + tokenYellow + ", tokenBlue=" + tokenBlue + ", effectWhite=" + effectWhite + ", effectFood=" + effectFood + ", effectRed=" + effectRed + ", effectMusic=" + effectMusic + ", effectStone=" + effectStone + ", effectIdea=" + effectIdea + ", \neffectSmile=" + effectSmile + ", effectHouse=" + effectHouse + ", effectBlue=" + effectBlue + ", effectWeapon=" + effectWeapon + ", effectWeaponOld=" + effectWeaponOld + ", effectYellow=" + effectYellow + ", costPeople=" + costPeople + ", costFoot=" + costFoot + ", costWonder=" + costWonder + ", \ncostMilitary=" + costMilitary + ", costHorse=" + costHorse + ", costCannon=" + costCannon + ", costPeace=" + costPeace + ", costRevolution=" + costRevolution + ", costRed=" + costRed + ", costStone=" + costStone + ", costIdea=" + costIdea + ", costFood=" + costFood + ", costMusic=" + costMusic + '}';

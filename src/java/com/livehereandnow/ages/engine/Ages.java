@@ -150,8 +150,17 @@ public class Ages implements AgesCommon {
         InputStreamReader cin = new InputStreamReader(System.in);
         BufferedReader in = new BufferedReader(cin);
 //        engine.getField().showSector();
+        StringBuilder sb;
         while (true) {
-            System.out.print("" + ages.getCurrentPlayerName() + " >> ");
+            sb = new StringBuilder();
+            sb.append(ages.get當前操作玩家().getName()).append("@");
+            sb.append("回合");
+            sb.append(ages.getRound());
+            sb.append(ages.getCurrentPlayerName());
+            sb.append(STAGE_NAME[ages.get現在階段()]);
+            System.out.print(sb.toString() + "$ ");
+
+//            System.out.print("" + ages.getCurrentPlayerName() + " >> ");
             ages.preParser(in.readLine());
 //            engine.doCmd("9999");
 
