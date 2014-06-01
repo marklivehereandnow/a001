@@ -8,7 +8,7 @@ package com.livehereandnow.ages.engine;
 //import com.livehereandnow.ages.card.Card;
 import com.livehereandnow.ages.card.AgesCard;
 import com.livehereandnow.ages.card.AgesCardFactory;
-import com.livehereandnow.ages.card.AgesCardShowStyle;
+import com.livehereandnow.ages.card.AgesCommon;
 import com.livehereandnow.ages.exception.AgesException;
 import com.livehereandnow.ages.field.Points;
 import com.livehereandnow.ages.field.Score;
@@ -32,14 +32,13 @@ import java.util.SortedSet;
  *
  * @author mark
  */
-public class Ages implements AgesCardShowStyle {
+public class Ages implements AgesCommon {
 
     // constants
 //    final String[] STAGE_NAME = {" ", "政治階段", "內政階段"};
     final String[] STAGE_NAME = {" ", "政治", "內政"};
 //    final String[] AGE_NAME = {"A", "I", "II", "III"};
-    final String[] AGE_NAME = {"\uFF21", "\uFF29", "\uFF29\uFF29", "\uFF29\uFF29\uFF29"};//http://www.unicode.org/charts/PDF/UFF00.pdf
-    final String FULLWIDTH_COLON = "\uFF1A";//;
+     final String FULLWIDTH_COLON = "\uFF1A";//;
     final String FULLWIDTH_SPACE = "\u3000";
     final String FULLWIDTH_LT_SIGN = "\uFF1C";// <
     final String FULLWIDTH_EQ_SIGN = "\uFF1D";// =

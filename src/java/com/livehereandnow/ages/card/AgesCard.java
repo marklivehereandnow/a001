@@ -72,7 +72,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "AgesCard.findByCostFood", query = "SELECT a FROM AgesCard a WHERE a.costFood = :costFood"),
     @NamedQuery(name = "AgesCard.findByCostMusic", query = "SELECT a FROM AgesCard a WHERE a.costMusic = :costMusic")})
 //)
-public class AgesCard implements Serializable , AgesCardShowStyle{
+public class AgesCard implements Serializable, AgesCommon {
+
+//    private final String[] ageStr = {"A", "I", "II", "III", "-"};
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -301,8 +303,7 @@ public class AgesCard implements Serializable , AgesCardShowStyle{
     }
 
     public String getAgeStr() {
-        String strAge[] = {"A", "I", "II", "III", "IV"};
-        return strAge[age];
+        return AGE_NAME[age];
     }
 
     public String getName() {
@@ -637,10 +638,23 @@ public class AgesCard implements Serializable , AgesCardShowStyle{
         return true;
     }
 
-//    @Override
-//    public String toString() {
-//        return "com.livehereandnow.ages.card.AgesCard[ seq=" + seq + " ]";
-//    }
+    private String toString政府區() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("【");
+        sb.append(AGE_NAME[age]);
+        sb.append("");
+        sb.append(name);
+        sb.append(id);
+        sb.append("-");
+        sb.append(tag);
+        sb.append(" 白");
+        sb.append(effectWhite);
+        sb.append(" 紅");
+        sb.append(effectRed);
+        sb.append("】");
+        return sb.toString();
+    }
+
     /**
      *
      * @param style <br>
@@ -649,31 +663,15 @@ public class AgesCard implements Serializable , AgesCardShowStyle{
      * @return
      */
     public String toString(int style) {
-        String[] ageStr = {"A", "I", "II", "III", "-"};
 
         switch (style) {
-            case STYLE_政府區:// 政府區
-                StringBuilder sb1 = new StringBuilder();
-//                System.out.println("");
-                sb1.append("【");
-                sb1.append(ageStr[age]);
-                sb1.append("");
-                sb1.append(name);
-                sb1.append(id);
-                sb1.append("-");
-                sb1.append(tag);
-                sb1.append(" 白");
-                sb1.append(this.effectWhite);
-                sb1.append(" 紅");
-                sb1.append(this.effectRed);
-                sb1.append("】");
-
-                return sb1.toString();
+            case STYLE_政府區:
+                return toString政府區();
             case 8:// 農場區,礦山區
                 StringBuilder sb8 = new StringBuilder();
 //                System.out.println("");
                 sb8.append("[");
-                sb8.append(ageStr[age]);
+                sb8.append(AGE_NAME[age]);
                 sb8.append("");
                 sb8.append(name);
                 sb8.append(id);
@@ -695,7 +693,7 @@ public class AgesCard implements Serializable , AgesCardShowStyle{
                 StringBuilder sb2 = new StringBuilder();
 //                System.out.println("");
                 sb2.append("[");
-                sb2.append(ageStr[age]);
+                sb2.append(AGE_NAME[age]);
                 sb2.append("");
 
                 sb2.append(name);
@@ -714,7 +712,7 @@ public class AgesCard implements Serializable , AgesCardShowStyle{
                 StringBuilder sb3 = new StringBuilder();
 //                System.out.println("");
                 sb3.append("xxx[");
-                sb3.append(ageStr[age]);
+                sb3.append(AGE_NAME[age]);
                 sb3.append("");
                 sb3.append(name);
                 sb3.append(id);
@@ -737,7 +735,7 @@ public class AgesCard implements Serializable , AgesCardShowStyle{
                 StringBuilder sb101 = new StringBuilder();
 //                System.out.println("");
                 sb101.append("【");
-                sb101.append(ageStr[age]);
+                sb101.append(AGE_NAME[age]);
                 sb101.append("");
                 sb101.append(name);
                 sb101.append(id);
@@ -752,7 +750,7 @@ public class AgesCard implements Serializable , AgesCardShowStyle{
                 StringBuilder sb102 = new StringBuilder();
 //                System.out.println("");
                 sb102.append("【");
-                sb102.append(ageStr[age]);
+                sb102.append(AGE_NAME[age]);
                 sb102.append("");
                 sb102.append(name);
                 sb102.append(id);
@@ -765,7 +763,7 @@ public class AgesCard implements Serializable , AgesCardShowStyle{
                 StringBuilder sb103 = new StringBuilder();
 //                System.out.println("");
                 sb103.append("【");
-                sb103.append(ageStr[age]);
+                sb103.append(AGE_NAME[age]);
                 sb103.append("");
                 sb103.append(name);
                 sb103.append(id);
@@ -778,7 +776,7 @@ public class AgesCard implements Serializable , AgesCardShowStyle{
                 StringBuilder sb104 = new StringBuilder();
 //                System.out.println("");
                 sb104.append("【");
-                sb104.append(ageStr[age]);
+                sb104.append(AGE_NAME[age]);
                 sb104.append("");
                 sb104.append(name);
                 sb104.append(id);
@@ -795,7 +793,7 @@ public class AgesCard implements Serializable , AgesCardShowStyle{
                 StringBuilder sb105 = new StringBuilder();
 //                System.out.println("");
                 sb105.append("【");
-                sb105.append(ageStr[age]);
+                sb105.append(AGE_NAME[age]);
                 sb105.append("");
                 sb105.append(name);
                 sb105.append(id);
